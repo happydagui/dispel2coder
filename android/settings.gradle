@@ -1,0 +1,3 @@
+rootProject.name = 'dispel2coder'
+
+include ':app'
