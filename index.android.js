@@ -9,25 +9,27 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Navigator
 } from 'react-native';
+import Home from './app/components/home';
+import ProjectEulerView from './app/components/projecteuler';
+
 
 export default class dispel2coder extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
+      <Navigator initialRoute={{name: 'home'}}
+        renderScene={this.renderScene.bind(this)}></Navigator>
     );
+  }
+  renderScene(route, navigator) {
+    switch(route.name) {
+      case 'projecteuler':
+        return <ProjectEulerView navigator={navigator} />;
+      default:
+        return <Home navigator={navigator} />; 
+    }
   }
 }
 
@@ -37,17 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  }
 });
 
 AppRegistry.registerComponent('dispel2coder', () => dispel2coder);
