@@ -39,6 +39,7 @@ export default class ProjectEulerView extends Component {
       question: {
         id: 1,
         content: '',
+        title: '',
         answer: ''
       }
     };
@@ -50,12 +51,13 @@ export default class ProjectEulerView extends Component {
       (DB) => {
         db = DB;
         that.setState({ dbStatus: 'database test.db is opened.' });
-        that.setState({
+        /*that.setState({
           question: {
             id: 2,
             content: 'WebView Sample with MathJax</h1><p>A inline \(C_n^2\) equation.</p><p>A display $$\\frac{x}{y}+\\sqrt{2}$$</p>'
           }
-        });
+        });*/
+        that.onNext();
       }
     ).catch(
       error => {
@@ -87,23 +89,31 @@ export default class ProjectEulerView extends Component {
     var that = this;
     
     if (db) {
-      db.executeSql('select * from users order by random() limit 1;').then((results) => {
+      db.executeSql('select * from problems order by random() limit 1;').then((results) => {
         var len = results[0].rows.length;
         for (let i = 0; i < len; i++) {
           let row = results[0].rows.item(i);
-          console.log(`firstname: ${row.firstname}, lastname: ${row.lastname}`);
+          console.log(`fetching #${row.source_pk}, title: ${row.title}`);
 
           that.setState({
-            dbStatus: `fetching: ${row.firstname} ${row.lastname}`,
+            dbStatus: `fetching #${row.source_pk}, title: ${row.title}`,
             question: {
-              content: sample_problem_src,
-              id: 10
+              content: row.content,
+              id: row.id,
+              title: row.title,
+              answer: row.answer
             }
           });
         }
       });
     }
   }
+
+
+  fetchOne() {
+
+  }
+
 
   onVefify() {
     var that = this;
@@ -121,7 +131,7 @@ export default class ProjectEulerView extends Component {
 
   render() {
     const html = {
-      html: `<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath:[['$','$'],['\\(','\\)']]}});</script><script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script><b>No. ${this.state.question.id}</b> ${this.state.question.content}<script>MathJax.Hub.Queue(["Typeset", MathJax.Hub]);</script>`,
+      html: `<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax:{inlineMath:[['$','$'],['\\(','\\)']]}});</script><script src="https://cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML"></script><b>No. ${this.state.question.id} ${this.state.question.title}</b> ${this.state.question.content}<script>MathJax.Hub.Queue(["Typeset", MathJax.Hub]);</script>`,
       baseUrl: ''
     };
     // MathJax 默认使用\(xxxx\)作为内联的公式分割，使用$xxxx$的话需要显示声明
